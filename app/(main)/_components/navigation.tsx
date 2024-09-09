@@ -1,6 +1,6 @@
 "use client"
 import { ChevronsLeft, MenuIcon, PlusCircle, Search, Settings, Plus, Trash } from "lucide-react";
-import { ElementRef, useRef, useEffect, useState } from "react";
+import { ElementRef, useRef, useEffect, useState, useCallback } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ import { api } from "@/convex/_generated/api";
 import { usePathname } from "next/navigation";
 
 import { useSearch } from "@/hooks/use-search";
+import { useSettings } from "@/hooks/use-settings";
 import { UserItem }  from "./user-item";
 import { Item } from "./item";
 import { DocumentList } from "./document-list";
@@ -25,6 +26,7 @@ import { TrashBox } from "./trash-box";
 
 const Navigation = () => {
   const search = useSearch();
+  const settings = useSettings();
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width:768px");
   const create = useMutation(api.documents.create);
@@ -35,13 +37,28 @@ const Navigation = () => {
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
 
+
+  const resetWidth = useCallback(() => {
+    if (sidebarRef.current && navbarRef.current) {
+      setIsCollapsed(false);
+      setIsResetting(true);
+
+      sidebarRef.current.style.width = isMobile ? '100%' : '240px';
+      navbarRef.current.style.setProperty("width", isMobile ? '0' : 'calc(100% - 240px)');
+      navbarRef.current.style.setProperty('left', isMobile ? '100%' : '240px');
+      setTimeout(() => {
+        setIsResetting(false)
+      }, 300);
+    }
+  }, [isMobile])
+
   useEffect(() => {
     if (isMobile) {
       collapse()
     } else {
       resetWidth()
     }
-  }, [isMobile])
+  }, [isMobile, resetWidth])
 
   useEffect(() => {
     if (isMobile) {
@@ -64,7 +81,7 @@ const Navigation = () => {
 
     if (newWidth < 240){
       newWidth = 240;
-    } 
+    }
     if (newWidth > 480){
       newWidth = 480;
     }
@@ -82,19 +99,6 @@ const Navigation = () => {
     document.removeEventListener('mouseup', handleMouseUp);
   }
 
-  const resetWidth = () => {
-    if (sidebarRef.current && navbarRef.current) {
-      setIsCollapsed(false);
-      setIsResetting(true);
-
-      sidebarRef.current.style.width = isMobile ? '100%' : '240px';
-      navbarRef.current.style.setProperty("width", isMobile ? '0' : 'calc(100% - 240px)');
-      navbarRef.current.style.setProperty('left', isMobile ? '100%' : '240px');
-      setTimeout(() => {
-        setIsResetting(false)
-      }, 300);
-    }
-  }
 
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
@@ -119,7 +123,7 @@ const Navigation = () => {
 
   return (
     <>
-     
+
       <aside
         className={cn(`group/sidebar h-full bg-secondary overflow-y-auto relative flex flex-col w-60 z-[99999]`,
           isResetting && 'transition-all ease-in-out duration-300',
@@ -144,11 +148,11 @@ const Navigation = () => {
             <Item
               label="Settings"
               icon={Settings}
-              onClick={()=>{}}
+              onClick={settings.onOpen}
             />
             <Item
               onClick={handleCreate}
-              label="New Page" 
+              label="New Page"
               icon={PlusCircle}
             />
         </div>
@@ -164,21 +168,21 @@ const Navigation = () => {
                 <Item label="Trash" icon={Trash}></Item>
               </PopoverTrigger>
               <PopoverContent
-                className="p-0 w-72" 
+                className="p-0 w-72"
                 side={isMobile ? "bottom" : "right"}>
                 <TrashBox/>
               </PopoverContent>
             </Popover>
 
         </div>
-        <div 
+        <div
           className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0"
           onMouseDown={handleMouseDown}
           onClick={resetWidth} />
         </div>
       </aside>
       <div
-        
+
         className={cn("absolute top-0 z-[99999] left-60 w-[calc(100% - 240px)]",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && "left-0 w-full")}
