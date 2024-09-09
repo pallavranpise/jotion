@@ -10,18 +10,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 interface confirmModalProps {
-  children: React.ReactNode,
-  onConfirm: ()=>void,
-};
+  children: React.ReactNode;
+  onConfirm: () => void;
+}
 
-export const ConfirmModal = ({ 
-  children,
-  onConfirm,
-}: confirmModalProps) => {
-
+export const ConfirmModal = ({ children, onConfirm }: confirmModalProps) => {
   const handleConfirm = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -31,7 +27,7 @@ export const ConfirmModal = ({
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger onClick={e => e.stopPropagation()} asChild >
+      <AlertDialogTrigger onClick={(e) => e.stopPropagation()} asChild>
         {children}
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -42,7 +38,7 @@ export const ConfirmModal = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={e => e.stopPropagation()}>
+          <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirm}>
@@ -51,5 +47,5 @@ export const ConfirmModal = ({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};

@@ -3,16 +3,16 @@ import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const archive = mutation({
-  args:{id:v.id("documents")},
-  handler:async (context,args) => {
-   const identity = await context.auth.getUserIdentity()
+  args: { id: v.id("documents") },
+  handler: async (context, args) => {
+    const identity = await context.auth.getUserIdentity()
 
     if (!identity) {
       throw new Error("Not authenticated")
     }
 
     const userId = identity.subject
-    
+
     const existingDocument = await context.db.get(args.id)
 
     if (!existingDocument) {
@@ -23,24 +23,24 @@ export const archive = mutation({
       throw new Error("Unauthorized")
     }
 
-    const recursiveArchive = async (documentId:Id<'documents'>) => {
+    const recursiveArchive = async (documentId: Id<'documents'>) => {
       const children = await context.db
-      .query('documents')
-      .withIndex("by_user_parent",q => (
-        q.eq("userId",userId).eq('parentDocument',documentId)
-      ))
-      .collect()
-    
+        .query('documents')
+        .withIndex("by_user_parent", q => (
+          q.eq("userId", userId).eq('parentDocument', documentId)
+        ))
+        .collect()
+
       for (const child of children) {
-        await context.db.patch(child._id,{
-          isArchived:true
+        await context.db.patch(child._id, {
+          isArchived: true
         })
         await recursiveArchive(child._id)
       }
     }
 
-    const document = await context.db.patch(args.id,{
-      isArchived:true
+    const document = await context.db.patch(args.id, {
+      isArchived: true
     })
 
     await recursiveArchive(args.id)
@@ -108,11 +108,11 @@ export const getTrash = query({
     const userId = identity.subject;
 
     const documents = ctx.db
-        .query("documents")
-        .withIndex("by_user", (q) => q.eq("userId", userId))
-        .filter( (q) => q.eq(q.field("isArchived"), true) )
-        .order("desc")
-        .collect();
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), true))
+      .order("desc")
+      .collect();
 
     return documents;
   },
@@ -121,16 +121,16 @@ export const getTrash = query({
 
 
 export const restore = mutation({
-  args: { id: v.id("documents") }, 
+  args: { id: v.id("documents") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if(!identity){
+    if (!identity) {
       throw new Error("Not authenticated");
     }
     const userId = identity.subject;
     const existingDocument = await ctx.db.get(args.id);
-    
-    if(!existingDocument) {
+
+    if (!existingDocument) {
       throw new Error("Not found");
     }
 
@@ -139,19 +139,19 @@ export const restore = mutation({
         .query("documents")
         .withIndex("by_user_parent", (q) => (
           q.eq("userId", userId)
-           .eq("parentDocument", documentId)
+            .eq("parentDocument", documentId)
         ))
         .collect();
 
-        for (const child of children) {
-          await ctx.db.patch(child._id, {
-            isArchived: false,
-          });
-          await recursiveRestore(child._id);
-        }
+      for (const child of children) {
+        await ctx.db.patch(child._id, {
+          isArchived: false,
+        });
+        await recursiveRestore(child._id);
+      }
     }
 
-    if(existingDocument.userId !== userId) {
+    if (existingDocument.userId !== userId) {
       throw new Error("Not authorized");
     }
     const options: Partial<Doc<"documents">> = {
@@ -178,18 +178,18 @@ export const remove = mutation(
     handler: async (ctx, args) => {
       const identity = await ctx.auth.getUserIdentity();
 
-      if(!identity){
+      if (!identity) {
         throw new Error("Not authenticated");
       }
 
       const userId = identity.subject;
       const existingDocument = await ctx.db.get(args.id);
 
-      if(!existingDocument) {
+      if (!existingDocument) {
         throw new Error("Not found");
       }
 
-      if(existingDocument.userId !== userId) {
+      if (existingDocument.userId !== userId) {
         throw new Error("Not authorized");
       }
 
