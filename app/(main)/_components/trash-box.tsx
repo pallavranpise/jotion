@@ -56,6 +56,8 @@ export const TrashBox = () => {
       success: "Removed note",
       error: "Failed to remove note",
     });
+    
+    router.push("/documents");
   };
 
   if (documents === undefined) {
