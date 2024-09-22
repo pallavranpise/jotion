@@ -9,7 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Spinner } from "@/components/spinner";
 import { Input } from "@/components/ui/input";
-import { ConfirmModal } from "@/components/modals/confirm-modals";
+import { ConfirmModal } from "@/components/modals/confirm-modal";
 
 export const TrashBox = () => {
   const router = useRouter();

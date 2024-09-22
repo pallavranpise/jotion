@@ -7,7 +7,7 @@ import { useMutation } from "convex/react";
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ConfirmModal } from "@/components/modals/confirm-modals";
+import { ConfirmModal } from "@/components/modals/confirm-modal";
 import { Button } from "@/components/ui/button";
 
 interface BannerProps {
