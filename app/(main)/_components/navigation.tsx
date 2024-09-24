@@ -30,8 +30,10 @@ import { Item } from "./item";
 import { DocumentList } from "./document-list";
 import { TrashBox } from "./trash-box";
 import Navbar from "@/app/(main)/_components/navbar";
+import { useRouter } from "next/navigation";
 
 const Navigation = () => {
+  const router = useRouter();
   const search = useSearch();
   const settings = useSettings();
   const pathname = usePathname();
@@ -127,7 +129,10 @@ const Navigation = () => {
   };
 
   const handleCreate = () => {
-    const promise = create({ title: "Untitled" });
+    const promise = create({ title: "Untitled" }).then((documentId) =>
+      router.push(`/documents/${documentId}`)
+    );
+
     toast.promise(promise, {
       loading: "Creating a new note...",
       success: "Created a new note",

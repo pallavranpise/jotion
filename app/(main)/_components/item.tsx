@@ -74,7 +74,7 @@ export const Item = ({
         if (!expanded) {
           onExpand?.();
         }
-        // router.push(`document/${documentId}`);
+        router.push(`/documents/${documentId}`);
 
         toast.promise(promise, {
           loading: "Creating a new note...",
@@ -88,7 +88,8 @@ export const Item = ({
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
     if (!id) return;
-    const promise = archive({ id });
+
+    const promise = archive({ id }).then(() => router.push(`/documents`));
 
     toast.promise(promise, {
       loading: "Moving to trash",
@@ -117,7 +118,9 @@ export const Item = ({
         </div>
       )}
       {documentIcon ? (
-        <div className="shrink-0 mr-2 text-[18px]">{documentIcon}</div>
+        <div className="shrink-0 mr-2 text-[18px] w-[18px] ">
+          {documentIcon}
+        </div>
       ) : (
         <Icon className="shrink-0 w-[18px] h-[18px] mr-2 text-muted-foreground" />
       )}
