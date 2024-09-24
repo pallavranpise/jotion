@@ -30,11 +30,10 @@ export default function Editor({ onChange, initialContent, editable }: any) {
   const debouncedSave = useCallback((s: string) => {
     const currentTime = Date.now();
     if (currentTime - lastSaveTimeRef.current >= 1000) {
-      console.log(editor.document, "saving");
       onChange(s);
       lastSaveTimeRef.current = currentTime;
     }
-  }, []);
+  }, [onChange]);
 
   if (editor === undefined) {
     return "Loading content...";
