@@ -17,7 +17,7 @@ interface CoverImageProps {
   preview?: boolean;
 }
 
-export const Cover = ({ url, preview }: CoverImageProps) => {
+export default function Cover ({ url, preview }: CoverImageProps) {
   const { edgestore } = useEdgeStore();
   const params = useParams();            
   const coverImage = useCoverImage();
