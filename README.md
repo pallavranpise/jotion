@@ -1,8 +1,15 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Note taking web app inspired by notion. 
+Built using Nextjs, React, Tailwindcss, Clerk, Convex, Typescript.
 
-## Getting Started
+## https://note-taking-app-pallav-ranpises-projects.vercel.app/
 
-First, run the development server:
++ signin using github account.
++ create notes using rich text editor with support for images and files.
++ group and nest pages to organize topics.
++ share pages with the world using publishing feature.
+
+
+to run a copy locally run the development server:
 
 ```bash
 npm run dev
